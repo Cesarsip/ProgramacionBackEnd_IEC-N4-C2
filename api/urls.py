@@ -6,5 +6,6 @@ router = routers.DefaultRouter()
 router.register(r'programmers', views.ProgrammerViewSet)
 
 urlpatterns = [
-    path('', include(router.urls))
+    path('home/', views.home, name='home'),       # <-- Nueva ruta HTML
+    path('', include(router.urls))                # Rutas API
 ]

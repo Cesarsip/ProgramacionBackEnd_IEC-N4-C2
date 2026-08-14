@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevHub - CRUD de Programadores</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --bg-card: #1e293b;
+            --accent-color: #6366f1;
+            --accent-hover: #4f46e5;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --success: #10b981;
+            --danger: #ef4444;
+            --border-color: #334155;
+            --radius: 12px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--bg-primary); color: var(--text-primary); min-height: 100vh; }
+
+        .navbar {
+            background-color: rgba(30, 41, 59, 0.8);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center;
+        }
+        .brand { font-size: 1.25rem; font-weight: 700; color: var(--accent-color); }
+        .nav-links a { color: var(--text-secondary); text-decoration: none; margin-left: 1.5rem; }
+
+        .container { max-width: 1200px; margin: 2rem auto; padding: 0 1.5rem; }
+        .header-section { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+
+        .btn-primary {
+            background-color: var(--accent-color); color: white; padding: 0.625rem 1.25rem;
+            border-radius: var(--radius); text-decoration: none; font-weight: 600;
+            border: none; cursor: pointer; transition: background-color 0.2s;
+        }
+        .btn-primary:hover { background-color: var(--accent-hover); }
+
+        .btn-danger {
+            background-color: rgba(239, 68, 68, 0.2); color: var(--danger);
+            border: 1px solid var(--danger); padding: 0.35rem 0.75rem;
+            border-radius: 6px; cursor: pointer; font-weight: 500;
+        }
+        .btn-danger:hover { background-color: var(--danger); color: white; }
+
+        .btn-edit {
+            background-color: rgba(99, 102, 241, 0.2); color: #a5b4fc;
+            border: 1px solid var(--accent-color); padding: 0.35rem 0.75rem;
+            border-radius: 6px; cursor: pointer; font-weight: 500; margin-right: 0.5rem;
+        }
+        .btn-edit:hover { background-color: var(--accent-color); color: white; }
+
+        .grid-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
+        .card {
+            background-color: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: var(--radius); padding: 1.5rem; display: flex;
+            flex-direction: column; justify-content: space-between;
+        }
+        .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; }
+        .status-badge { font-size: 0.75rem; font-weight: 600; padding: 0.25rem 0.625rem; border-radius: 9999px; }
+        .status-active { background-color: rgba(16, 185, 129, 0.15); color: var(--success); }
+        .status-inactive { background-color: rgba(239, 68, 68, 0.15); color: var(--danger); }
+
+        /* Modal styling */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.7); display: none; justify-content: center; align-items: center; z-index: 1000;
+        }
+        .modal-content {
+            background: var(--bg-card); padding: 2rem; border-radius: var(--radius);
+            width: 100%; max-width: 450px; border: 1px solid var(--border-color);
+        }
+        .modal-content h2 { margin-bottom: 1.5rem; }
+        .form-group { margin-bottom: 1.25rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; color: var(--text-secondary); font-size: 0.875rem; }
+        .form-group input[type="text"], .form-group input[type="number"] {
+            width: 100%; padding: 0.625rem; border-radius: 6px; border: 1px solid var(--border-color);
+            background: var(--bg-primary); color: var(--text-primary);
+        }
+        .form-checkbox { display: flex; align-items: center; gap: 0.5rem; }
+        .modal-actions { display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.5rem; }
+        .btn-cancel { background: transparent; border: 1px solid var(--border-color); color: var(--text-secondary); padding: 0.625rem 1.25rem; border-radius: var(--radius); cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    {% csrf_token %}
+
+    <nav class="navbar">
+        <div class="brand">⚡ DevHub</div>
+        <div class="nav-links">
+            <a href="/api/v1/programmers/" target="_blank">API DRF</a>
+            <a href="/admin/" target="_blank">Admin</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header-section">
+            <div>
+                <h1>Programadores Registrados</h1>
+                <p style="color: var(--text-secondary);">Gestión CRUD completa en tiempo real</p>
+            </div>
+            <button class="btn-primary" onclick="openCreateModal()">+ Agregar Programador</button>
+        </div>
+
+        <div class="grid-cards">
+            {% for dev in programmers %}
+                <div class="card">
+                    <div>
+                        <div class="card-header">
+                            <h2>{{ dev.nickname }}</h2>
+                            {% if dev.is_active %}
+                                <span class="status-badge status-active">Activo</span>
+                            {% else %}
+                                <span class="status-badge status-inactive">Inactivo</span>
+                            {% endif %}
+                        </div>
+                        <p style="margin-bottom: 0.5rem; color: #a5b4fc;">💻 {{ dev.language }}</p>
+                        <p style="margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.875rem;">🎂 {{ dev.age }} años</p>
+                    </div>
+                    <div>
+                        <button class="btn-edit" onclick="openEditModal('{{ dev.id }}', '{{ dev.nickname|escapejs }}', '{{ dev.language|escapejs }}', '{{ dev.age }}', '{% if dev.is_active %}true{% else %}false{% endif %}')">Editar</button>
+                        <button class="btn-danger" onclick="deleteProgrammer('{{ dev.id }}')">Eliminar</button>
+                    </div>
+                </div>
+            {% empty %}
+                <p style="color: var(--text-secondary);">No hay programadores registrados en la base de datos.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Modal Formulario CRUD -->
+    <div class="modal-overlay" id="programmerModal">
+        <div class="modal-content">
+            <h2 id="modalTitle">Nuevo Programador</h2>
+            <form id="programmerForm">
+                <input type="hidden" id="progId">
+                <div class="form-group">
+                    <label>Nombre / Nickname</label>
+                    <input type="text" id="nickname" required>
+                </div>
+                <div class="form-group">
+                    <label>Lenguaje Principal</label>
+                    <input type="text" id="language" required>
+                </div>
+                <div class="form-group">
+                    <label>Edad</label>
+                    <input type="number" id="age" min="1" max="120" required>
+                </div>
+                <div class="form-group form-checkbox">
+                    <input type="checkbox" id="isActive" checked>
+                    <label for="isActive" style="margin: 0;">¿Está Activo?</label>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeModal()">Cancelar</button>
+                    <button type="submit" class="btn-primary">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const modal = document.getElementById('programmerModal');
+        const form = document.getElementById('programmerForm');
+
+        function getCsrfToken() {
+            const csrfInput = document.querySelector('[name=csrfmiddlewaretoken]');
+            return csrfInput ? csrfInput.value : '';
+        }
+
+        function openCreateModal() {
+            document.getElementById('modalTitle').innerText = 'Nuevo Programador';
+            document.getElementById('progId').value = '';
+            document.getElementById('nickname').value = '';
+            document.getElementById('language').value = '';
+            document.getElementById('age').value = '';
+            document.getElementById('isActive').checked = true;
+            modal.style.display = 'flex';
+        }
+
+        function openEditModal(id, nickname, language, age, isActive) {
+            document.getElementById('modalTitle').innerText = 'Editar Programador';
+            document.getElementById('progId').value = id;
+            document.getElementById('nickname').value = nickname;
+            document.getElementById('language').value = language;
+            document.getElementById('age').value = age;
+            document.getElementById('isActive').checked = (isActive === 'true' || isActive === true);
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            modal.style.display = 'none';
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('progId').value;
+            const data = {
+                nickname: document.getElementById('nickname').value,
+                language: document.getElementById('language').value,
+                age: parseInt(document.getElementById('age').value, 10),
+                is_active: document.getElementById('isActive').checked
+            };
+
+            const url = id ? `/api/v1/programmers/${id}/` : '/api/v1/programmers/';
+            const method = id ? 'PUT' : 'POST';
+
+            try {
+                const response = await fetch(url, {
+                    method: method,
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCsrfToken()
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    window.location.reload();
+                } else {
+                    const err = await response.json();
+                    alert('Error al guardar: ' + JSON.stringify(err));
+                }
+            } catch (error) {
+                alert('Error de conexión con el servidor.');
+            }
+        });
+
+        async function deleteProgrammer(id) {
+            if (confirm('¿Seguro que deseas eliminar este registro?')) {
+                try {
+                    const response = await fetch(`/api/v1/programmers/${id}/`, {
+                        method: 'DELETE',
+                        headers: { 'X-CSRFToken': getCsrfToken() }
+                    });
+
+                    if (response.ok) {
+                        window.location.reload();
+                    } else {
+                        alert('Error al eliminar.');
+                    }
+                } catch (error) {
+                    alert('Error en la solicitud.');
+                }
+            }
+        }
+    </script>
+</body>
+</html>
