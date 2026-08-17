@@ -1,11 +1,17 @@
+# api/urls.py
 from django.urls import path, include
-from rest_framework import routers
-from api import views
+from rest_framework.routers import DefaultRouter
+from . import views
 
-router = routers.DefaultRouter()
+router = DefaultRouter()
 router.register(r'programmers', views.ProgrammerViewSet)
 
 urlpatterns = [
-    path('home/', views.home, name='home'),       # <-- Nueva ruta HTML
-    path('', include(router.urls))                # Rutas API
+    # API endpoints
+    path('', include(router.urls)),
+    
+    # Vistas HTML personalizadas
+    path('inicio/', views.inicio_view, name='inicio'),
+    path('servicios/', views.servicios_view, name='servicios'),
+    path('contacto/', views.contacto_view, name='contacto'),
 ]

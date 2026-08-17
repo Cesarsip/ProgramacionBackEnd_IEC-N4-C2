@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>DevHub - Servicios</title>
+    <style>
+        body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8fafc; color: #333; }
+        header { background-color: #1e293b; color: white; padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 24px; font-weight: bold; color: #ffffff; }
+        nav a { color: white; text-decoration: none; margin-left: 20px; font-weight: 500; }
+        nav a.active { background-color: #ff6b35; padding: 10px 20px; border-radius: 20px; }
+        .container { max-width: 1000px; margin: 40px auto; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .card { border-left: 4px solid #ff6b35; padding: 15px; margin: 15px 0; background: #f1f5f9; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">DevHub</div>
+        <nav>
+            <a href="/api/v1/inicio/">Inicio</a>
+            <a href="/api/v1/servicios/" class="active">Servicios</a>
+            <a href="/api/v1/contacto/">Contacto</a>
+        </nav>
+    </header>
+    <div class="container">
+        <h2>Nuestros Servicios Tecnológicos</h2>
+        <div class="card">
+            <h3>Desarrollo de APIs RESTful</h3>
+            <p>Construcción e integración de arquitecturas escalables utilizando Django REST Framework.</p>
+        </div>
+        <div class="card">
+            <h3>Gestión de Talento IT</h3>
+            <p>Provisión de programadores calificados para integrarse directamente a tu equipo de trabajo.</p>
+        </div>
+    </div>
+</body>
+</html>
