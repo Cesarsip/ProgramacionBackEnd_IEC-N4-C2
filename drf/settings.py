@@ -128,5 +128,6 @@ MAILERS = {
     },
 }
 
+LOGIN_URL = '/api/v1/login/'
 LOGIN_REDIRECT_URL = '/api/v1/home/'
-LOGOUT_REDIRECT_URL = '/api-auth/login/'
+LOGOUT_REDIRECT_URL = '/api/v1/login/'

@@ -11,7 +11,8 @@
         nav a.active { background-color: #ff6b35; padding: 10px 20px; border-radius: 20px; }
         .container { max-width: 1000px; margin: 40px auto; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .banner { background-color: #ff6b35; color: white; text-align: center; padding: 15px; font-weight: bold; border-radius: 6px; margin-bottom: 25px; }
-        .btn-api { display: inline-block; background-color: #1e293b; color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; margin-top: 15px; }
+        .btn-api { display: inline-block; background-color: #1e293b; color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; margin-top: 15px; transition: background 0.2s; }
+        .btn-api:hover { background-color: #334155; }
     </style>
 </head>
 <body>
@@ -21,6 +22,8 @@
             <a href="/api/v1/inicio/" class="active">Inicio</a>
             <a href="/api/v1/servicios/">Servicios</a>
             <a href="/api/v1/contacto/">Contacto</a>
+            <a href="/api/v1/home/">Dashboard</a>
+            <a href="/admin/" target="_blank">Admin</a>
         </nav>
     </header>
     <div class="container">
@@ -28,7 +31,8 @@
         <h2>Bienvenido a DevHub Soluciones Tecnológicas</h2>
         <p>Somos una empresa especializada en la gestión e integración de talento en ingeniería de software. Nos dedicamos a optimizar y estructurar proyectos backend de alto rendimiento.</p>
         <p>A través de nuestra plataforma en la nube, puedes consultar directamente la lista de desarrolladores disponibles para tus proyectos.</p>
-        <a href="/api/v1/programmers/" class="btn-api">Ver API REST de Programadores</a>
+        
+        <a href="/api/v1/programmers/" class="btn-api" target="_blank">Ver API REST de Programadores</a>
     </div>
 </body>
 </html>
